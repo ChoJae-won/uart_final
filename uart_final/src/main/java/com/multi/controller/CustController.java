@@ -24,6 +24,36 @@ public class CustController {
 		model.addAttribute("center", dir+"login");
 		return "main";
 	}
-
+//	@RequestMapping("/logout")
+//	public String logout(HttpSession session) {
+//		//session을 거절하고 다시 main으로 보냄!
+//		if(session != null) {
+//			session.invalidate();
+//		}
+//		return "redirect:/";
+//	}
+	
+	@RequestMapping("/loginimpl")
+	public String loginimpl(String custid, String pwd, Model model, HttpSession session) {
+		CustomerDTO cust = null;
+		try {
+			cust = cust_service.get(custid);
+			if (cust == null) {
+				model.addAttribute("center", dir+"loginfail");
+			} else {
+				if (pwd.equals(cust.getPwd())) {
+					session.setAttribute("logincust", cust);
+					model.addAttribute("center", "main");
+					// id,pwd가 다 아닐 때
+				} else {
+					model.addAttribute("center", dir+"loginfail");
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/";
+	}
 
 }
